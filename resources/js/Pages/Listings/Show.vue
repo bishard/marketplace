@@ -35,8 +35,14 @@ const deleteListing = () => {
                     <div class="mt-4 border">
                         <p>{{listing.title}}</p>
                         <p>{{listing.price}}</p>
-                        <p>{{listing.category}}</p>
+                        <p>{{listing.category.name}}</p>
                         <p>{{listing.user.name}}</p>
+                        <img
+                            v-for="image in listing.images"
+                            :key="image.id"
+                            :src="'/storage/' + image.path"
+                            class="w-48 h-48 object-cover rounded"
+                        />
                         <div v-if="page.props.auth.user.id == listing.user.id">
                             <Link :href="route('listings.edit', listing.id)">
                                 Редактировать

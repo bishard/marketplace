@@ -30,7 +30,7 @@ defineProps({
                             {{ listing.title }}
                         </Link>
                         <p>{{listing.price}}</p>
-                        <p>{{listing.category}}</p>
+                        <p>{{listing.category.name}}</p>
                         <p>{{listing.user.name}}</p>
                     </div>
                 </div>

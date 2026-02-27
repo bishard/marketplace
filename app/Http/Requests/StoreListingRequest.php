@@ -25,7 +25,9 @@ class StoreListingRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048'
         ];
     }
 }

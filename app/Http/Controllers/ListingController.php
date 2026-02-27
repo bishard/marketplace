@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreListingRequest;
 use App\Http\Requests\UpdateListingRequest;
+use App\Models\Category;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,7 @@ class ListingController extends Controller
      */
     public function index()
     {
-        $listings = Listing::with('user')
+        $listings = Listing::with(['user', 'category'])
             ->latest()
             ->paginate(10);
 
@@ -29,7 +30,7 @@ class ListingController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Listings/Create');
+        return Inertia::render('Listings/Create', ['categories' => Category::all()]);
     }
 
     /**
@@ -40,6 +41,12 @@ class ListingController extends Controller
         $listing = $request->user()->listing()->create(
             $request->validated()
         );
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('listings', 'public');
+                $listing->images()->create(['path' => $path]);
+            }
+        }
 
         return redirect()
             ->route('listings.show', $listing)
@@ -51,7 +58,7 @@ class ListingController extends Controller
      */
     public function show(Listing $listing)
     {
-        $listing->load('user');
+        $listing->load(['user', 'category', 'images']);
 
         return Inertia::render('Listings/Show', [
             'listing' => $listing,
@@ -71,6 +78,7 @@ class ListingController extends Controller
 
         return Inertia::render('Listings/Edit', [
             'listing' => $listing,
+            'categories' => Category::all(),
         ]);
     }
 
