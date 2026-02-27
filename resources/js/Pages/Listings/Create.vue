@@ -10,12 +10,20 @@ const form = useForm({
     title: '',
     description: '',
     price: '',
-    category: '',
+    category_id: '',
+    images: []
 });
+
+const props = defineProps({
+    categories: Object
+});
+
+console.log(props.categories);
 
 const submit = () => {
     form.post(route('listings.store'), {
-        onFinish: () => form.reset('title', 'description', 'price', 'category'),
+        onFinish: () => form.reset('title', 'description', 'price', 'category_id'),
+        forceFormData: true
     });
 };
 
@@ -78,16 +86,18 @@ const submit = () => {
                         </div>
                         <div class="mt-4">
                             <InputLabel for="category" value="Категория" />
-                            <TextInput
-                                id="category"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.category"
-                                required
-                                autocomplete="category"
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.category" />
+                            <select id="category"     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" v-model="form.category_id">
+                                <option value="" disabled>Выберите категорию</option>
+                                <option v-for="category in props.categories" :key="category.id" :value = 'category.id'>
+                                    {{category.name}}
+                                </option>
+                            </select>
+                            <InputError class="mt-2" :message="form.errors.category_id" />
+                        </div>
+                        <div class="mt-4">
+                            <InputLabel for="imageload" value="Загрузите изображение" />
+                            <input id="imageload" type="file" multiple @change="form.images = $event.target.files" />
+                            <InputError class="mt-2" :message="form.errors.images" />
                         </div>
                         <div class="mt-4">
                             <PrimaryButton class="ms-4">
